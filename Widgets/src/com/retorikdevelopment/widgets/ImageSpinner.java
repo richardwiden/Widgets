@@ -28,17 +28,15 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 	}
 
 	private static final String TAG = "RetorikWidgets";
-	private boolean atRightEdge;
-	private boolean atLeftEdge;
 	private OnItemSelectedListener listener;
 	private ScaleGestureDetector mScaleDetector;
 	private float mScaleFactor;
-	boolean isScrollingRight, isScrollingLeft;
-	int position = -1;
-	View arg1 = null;
-	AdapterView<?> parent = null;
-	long id = -1;
-	public static boolean isTouching;
+	boolean isScrollingRight, isScrollingLeft, atLeftEdge, atRightEdge, isTouching;
+	private int position = -1;
+	private View arg1 = null;
+	private AdapterView<?> parent = null;
+	private long id = -1;
+	private RectF rect;
 
 	public ImageSpinner(Context context) {
 		this(context, null);
@@ -51,22 +49,20 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 	public ImageSpinner(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		this.setCallbackDuringFling(false);
+		rect = new RectF();
 		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 	}
 
 	private void checkWidth() {
 		ImageView imgView = getSelectedImageView();
 		Rect r = imgView.getDrawable().getBounds();
-		Matrix m = new Matrix(imgView.getImageMatrix());
-		RectF rect = new RectF(0, 0, r.right, r.bottom);
-		int width = getWidth();
-		// int height = getHeight();
-		m.mapRect(rect);
+		rect.set(0, 0, r.right, r.bottom);
+		imgView.getImageMatrix().mapRect(rect);
 		if (rect.left >= -1)
 			atLeftEdge = true;
 		else
 			atLeftEdge = false;
-		if (rect.right <= width + 1)
+		if (rect.right <= getWidth() + 1)
 			atRightEdge = true;
 		else
 			atRightEdge = false;
@@ -80,11 +76,6 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 
 	public SpecialImageView getSelectedImageView() {
 		return (SpecialImageView) getSelectedView();
-	}
-
-	@Override
-	protected void onCreateContextMenu(ContextMenu menu) {
-		super.onCreateContextMenu(menu);
 	}
 
 	@Override
@@ -171,14 +162,7 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 	}
 
 	@Override
-	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		super.onLongPress(e);
-	}
-
-	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
-		// Log.e(TAG, "NOTHING SELECTED");
 		if (listener != null)
 			listener.onNothingSelected(parent);
 	}
@@ -192,12 +176,10 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 		if (distanceX < 0 && !atLeftEdge && !isScrollingLeft) {
 			getSelectedImageView().translate(-distanceX, -distanceY);
 			isScrollingLeft = isScrollingRight = false;
-			// Log.e(TAG, "" + 1);
 			return true;
 		} else if (distanceX > 0 && !atRightEdge && !isScrollingRight) {
 			getSelectedImageView().translate(-distanceX, -distanceY);
 			isScrollingLeft = isScrollingRight = false;
-			// Log.e(TAG, "" + 2);
 			return true;
 		} else {
 			if (distanceX < 0 && !isScrollingLeft) {
@@ -213,7 +195,6 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 				} else if (getChildAt(0) != null && !getChildAt(0).isSelected()) {
 					getSelectedImageView().translate(0, -distanceY);
 					super.onScroll(e1, e2, distanceX, distanceY);
-					// Log.e(TAG, "positionRIGHT: ");
 					return true;
 				} else {
 					getSelectedImageView().translate(-distanceX, -distanceY);
@@ -227,7 +208,6 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 				} else if (getChildAt(0 + 1) != null && !getChildAt(0 + 1).isSelected()) {
 					getSelectedImageView().translate(0, -distanceY);
 					super.onScroll(e1, e2, distanceX, distanceY);
-					// Log.e(TAG, "positionLEFT: ");
 					return true;
 				} else {
 					getSelectedImageView().translate(-distanceX, -distanceY);
@@ -243,7 +223,6 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// setAnimationDuration(250);
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			isTouching = true;
 		} else if (event.getAction() == MotionEvent.ACTION_UP && event.getPointerCount() == 1) {
@@ -252,7 +231,6 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 			isScrollingLeft = false;
 			if (parent != null && arg1 != null && position != -1 && id != -1)
 				listener.onItemSelected(parent, arg1, position, id);
-			// TODO behövs denna center?
 			getSelectedImageView().center(true, true, true);
 		}
 		mScaleDetector.onTouchEvent(event);
