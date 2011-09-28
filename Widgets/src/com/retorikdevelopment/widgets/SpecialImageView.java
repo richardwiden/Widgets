@@ -64,17 +64,14 @@ public class SpecialImageView extends ImageView {
 				deltaX = viewWidth - rect.right;
 			}
 		}
+		matrix.postTranslate(deltaX, deltaY);
+		this.setImageMatrixInternal(matrix);
+		
 		if (animation) {
-			setVisibility(INVISIBLE);
-			matrix.postTranslate(deltaX, deltaY);
-			this.setImageMatrixInternal(matrix);
 			TranslateAnimation trans = new TranslateAnimation(-deltaX, 0, -deltaY, 0);
 			trans.setDuration(100);
 			trans.setInterpolator(new AccelerateInterpolator(2.0f));
 			this.startAnimation(trans);
-		} else {
-			matrix.postTranslate(deltaX, deltaY);
-			this.setImageMatrixInternal(matrix);
 		}
 	}
 
@@ -95,6 +92,12 @@ public class SpecialImageView extends ImageView {
 	protected void onAnimationEnd() {
 		super.onAnimationEnd();
 		setVisibility(VISIBLE);
+	}
+
+	@Override
+	protected void onAnimationStart() {		
+		super.onAnimationStart();
+		setVisibility(INVISIBLE);
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 		super(context, attrs, defStyle);
 		this.setCallbackDuringFling(false);
 		rect = new RectF();
-		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());		
 	}
 
 	private void checkWidth() {
