@@ -67,11 +67,10 @@ public class SpecialImageView extends ImageView {
 			setVisibility(INVISIBLE);
 			matrix.postTranslate(deltaX, deltaY);
 			this.setImageMatrixInternal(matrix);
-			Log.e(TAG, "deltaX " + deltaX + " deltaY:" + deltaY);
 			TranslateAnimation trans = new TranslateAnimation(-deltaX, 0,
 					-deltaY, 0);
-			trans.setDuration(250);
-			trans.setInterpolator(new AccelerateInterpolator(1.0f));
+			trans.setDuration(100);
+			trans.setInterpolator(new AccelerateInterpolator(2.0f));
 			this.startAnimation(trans);
 		} else {
 			matrix.postTranslate(deltaX, deltaY);
