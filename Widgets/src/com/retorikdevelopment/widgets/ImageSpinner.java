@@ -72,6 +72,12 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 			atRightEdge = false;
 	}
 
+	@Override
+	protected ContextMenuInfo getContextMenuInfo() {
+		AdapterContextMenuInfo contextmenu = new AdapterContextMenuInfo(this, position, id);
+		return contextmenu;
+	}
+
 	public SpecialImageView getSelectedImageView() {
 		return (SpecialImageView) getSelectedView();
 	}
@@ -79,12 +85,6 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 	@Override
 	protected void onCreateContextMenu(ContextMenu menu) {
 		super.onCreateContextMenu(menu);
-	}
-
-	@Override
-	protected ContextMenuInfo getContextMenuInfo() {
-		AdapterContextMenuInfo contextmenu = new AdapterContextMenuInfo(this, position, id);
-		return contextmenu;
 	}
 
 	@Override

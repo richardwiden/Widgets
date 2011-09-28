@@ -9,7 +9,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
@@ -67,8 +66,7 @@ public class SpecialImageView extends ImageView {
 			setVisibility(INVISIBLE);
 			matrix.postTranslate(deltaX, deltaY);
 			this.setImageMatrixInternal(matrix);
-			TranslateAnimation trans = new TranslateAnimation(-deltaX, 0,
-					-deltaY, 0);
+			TranslateAnimation trans = new TranslateAnimation(-deltaX, 0, -deltaY, 0);
 			trans.setDuration(100);
 			trans.setInterpolator(new AccelerateInterpolator(2.0f));
 			this.startAnimation(trans);
@@ -81,11 +79,14 @@ public class SpecialImageView extends ImageView {
 	protected Bitmap getNotFoundBitmap() {
 		if (not_foundBitmap == null) {
 			Resources res = getContext().getResources();
-			BitmapDrawable drw = (BitmapDrawable) res
-					.getDrawable(R.drawable.placeholder);
+			BitmapDrawable drw = (BitmapDrawable) res.getDrawable(R.drawable.placeholder);
 			not_foundBitmap = drw.getBitmap();
 		}
 		return not_foundBitmap;
+	}
+
+	public boolean isNewImageNeedsLayout() {
+		return newImageNeedsLayout;
 	}
 
 	@Override
@@ -95,8 +96,7 @@ public class SpecialImageView extends ImageView {
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 		if (newImageNeedsLayout) {
 			Rect r = this.getDrawable().getBounds();
@@ -120,9 +120,7 @@ public class SpecialImageView extends ImageView {
 		matrix.mapRect(rect);
 		float imageWidth = rect.width();
 		float imageHeight = rect.height();
-		if (imageWidth * scaleFactor <= getWidth()
-				&& imageHeight * scaleFactor <= getHeight()
-				&& scaleFactor <= 1f) {
+		if (imageWidth * scaleFactor <= getWidth() && imageHeight * scaleFactor <= getHeight() && scaleFactor <= 1f) {
 			setZoomLevel(imageWidth, imageHeight, getWidth(), getHeight()); // Image
 																			// too
 																			// small
@@ -136,16 +134,18 @@ public class SpecialImageView extends ImageView {
 
 	@Override
 	public void setImageMatrix(Matrix matrix) {
-		throw new RuntimeException(
-				"Invalid method use helpermethods instead (setImageMatrixInternal)");
+		throw new RuntimeException("Invalid method use helpermethods instead (setImageMatrixInternal)");
 	}
 
 	protected void setImageMatrixInternal(Matrix matrix) {
 		super.setImageMatrix(matrix);
 	}
 
-	public void setZoomLevel(float imgWidth, float imgHeight, float vWidth,
-			float vHeight) {
+	public void setNewImageNeedsLayout(boolean newImageNeedsLayout) {
+		this.newImageNeedsLayout = newImageNeedsLayout;
+	}
+
+	public void setZoomLevel(float imgWidth, float imgHeight, float vWidth, float vHeight) {
 		if (vWidth != 0 && vHeight != 0) {
 			Matrix matrix = new Matrix(this.getImageMatrix());
 			float widthScale = vWidth / imgWidth;
@@ -166,13 +166,4 @@ public class SpecialImageView extends ImageView {
 		matrix.postTranslate(distanceX, distanceY);
 		this.setImageMatrixInternal(matrix);
 	}
-
-	public void setNewImageNeedsLayout(boolean newImageNeedsLayout) {
-		this.newImageNeedsLayout = newImageNeedsLayout;
-	}
-
-	public boolean isNewImageNeedsLayout() {
-		return newImageNeedsLayout;
-	}
-
 }
