@@ -17,6 +17,7 @@ public class SpecialImageView extends ImageView {
 	private Bitmap not_foundBitmap;
 	protected static final String TAG = "RetorikWidgets";
 	private boolean newImageNeedsLayout;
+	private RectF rect;
 
 	public SpecialImageView(Context context) {
 		this(context, null);
@@ -29,6 +30,7 @@ public class SpecialImageView extends ImageView {
 	public SpecialImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		newImageNeedsLayout = true;
+		rect = new RectF();
 	}
 
 	public void center(boolean horizontal, boolean vertical, boolean animation) {
@@ -36,7 +38,7 @@ public class SpecialImageView extends ImageView {
 		if (drawable == null)
 			return;
 		Rect r = drawable.getBounds();
-		RectF rect = new RectF(0, 0, r.right, r.bottom);
+		rect.set(0, 0, r.right, r.bottom);
 		final Matrix matrix = new Matrix(this.getImageMatrix());
 		matrix.mapRect(rect);
 		float height = rect.height(), width = rect.width();
@@ -100,14 +102,11 @@ public class SpecialImageView extends ImageView {
 		super.onLayout(changed, left, top, right, bottom);
 		if (newImageNeedsLayout) {
 			Rect r = this.getDrawable().getBounds();
-			RectF rect = new RectF(0, 0, r.right, r.bottom);
-			Matrix matrix = new Matrix(this.getImageMatrix());
-			matrix.mapRect(rect);
+			rect.set(0, 0, r.right, r.bottom);
+			getImageMatrix().mapRect(rect);
 			float imageWidth = rect.width();
 			float imageHeight = rect.height();
-			setZoomLevel(imageWidth, imageHeight, getWidth(), getHeight()); // Image
-																			// too
-																			// small
+			setZoomLevel(imageWidth, imageHeight, getWidth(), getHeight());
 			newImageNeedsLayout = false;
 		}
 		center(true, true, false);
@@ -115,7 +114,7 @@ public class SpecialImageView extends ImageView {
 
 	public void scale(float scaleFactor, float focusX, float focusY) {
 		Rect r = this.getDrawable().getBounds();
-		RectF rect = new RectF(0, 0, r.right, r.bottom);
+		rect.set(0, 0, r.right, r.bottom);
 		Matrix matrix = new Matrix(this.getImageMatrix());
 		matrix.mapRect(rect);
 		float imageWidth = rect.width();
