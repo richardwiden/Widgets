@@ -66,7 +66,6 @@ public class SpecialImageView extends ImageView {
 		}
 		matrix.postTranslate(deltaX, deltaY);
 		this.setImageMatrixInternal(matrix);
-		
 		if (animation) {
 			TranslateAnimation trans = new TranslateAnimation(-deltaX, 0, -deltaY, 0);
 			trans.setDuration(100);
@@ -95,7 +94,7 @@ public class SpecialImageView extends ImageView {
 	}
 
 	@Override
-	protected void onAnimationStart() {		
+	protected void onAnimationStart() {
 		super.onAnimationStart();
 		setVisibility(INVISIBLE);
 	}
@@ -104,13 +103,16 @@ public class SpecialImageView extends ImageView {
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 		if (newImageNeedsLayout) {
-			Rect r = this.getDrawable().getBounds();
-			rect.set(0, 0, r.right, r.bottom);
-			getImageMatrix().mapRect(rect);
-			float imageWidth = rect.width();
-			float imageHeight = rect.height();
-			setZoomLevel(imageWidth, imageHeight, getWidth(), getHeight());
-			newImageNeedsLayout = false;
+			Drawable drawable = this.getDrawable();
+			if (drawable != null) {
+				Rect r = drawable.getBounds();
+				rect.set(0, 0, r.right, r.bottom);
+				getImageMatrix().mapRect(rect);
+				float imageWidth = rect.width();
+				float imageHeight = rect.height();
+				setZoomLevel(imageWidth, imageHeight, getWidth(), getHeight());
+				newImageNeedsLayout = false;
+			}
 		}
 		center(true, true, false);
 	}

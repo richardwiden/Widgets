@@ -1,12 +1,10 @@
 package com.retorikdevelopment.widgets;
-
 import android.content.Context;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -15,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.app.Activity;
 
 public class ImageSpinner extends Gallery implements android.widget.AdapterView.OnItemSelectedListener {
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -28,6 +27,7 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 	}
 
 	private static final String TAG = "RetorikWidgets";
+	private static float densityModulator;
 	private OnItemSelectedListener listener;
 	private ScaleGestureDetector mScaleDetector;
 	private float mScaleFactor;
@@ -50,7 +50,20 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 		super(context, attrs, defStyle);
 		this.setCallbackDuringFling(false);
 		rect = new RectF();
-		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());		
+		mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+		DisplayMetrics metrics = new DisplayMetrics();
+		((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		switch (metrics.densityDpi) {
+		case DisplayMetrics.DENSITY_LOW:
+			densityModulator = 0.8f;
+			break;
+		case DisplayMetrics.DENSITY_MEDIUM:
+			densityModulator = 1.0f;
+			break;
+		case DisplayMetrics.DENSITY_HIGH:
+			densityModulator = 1.2f;
+			break;
+		}
 	}
 
 	private void checkWidth() {
@@ -125,19 +138,33 @@ public class ImageSpinner extends Gallery implements android.widget.AdapterView.
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		int width = getWidth();
+		float modifier = 1.1f;
+		if (width <= 240)
+			modifier = 2.8f;
+		if (width <= 320)
+			modifier = 2.4f;
+		else if (width <= 480)
+			modifier = 1.95f;
+		else if (width <= 540)
+			modifier = 1.83f;
+		else if (width <= 600)
+			modifier = 1.75f;
+		else if (width <= 800)
+			modifier = 1.41f;
+		else if (width <= 854)
+			modifier = 1.39f;
+		else if (width <= 1024)
+			modifier = 1.38f;
+		else if (width <= 1280)
+			modifier = 1.2f;
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
 			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-				if (getWidth() < getHeight())
-					super.onFling(null, null, 1200, 0);
-				else
-					super.onFling(null, null, 1600, 0);
+				super.onFling(null, null, (float) (getWidth() * modifier*densityModulator), 0);
 				return true;
 			}
 			if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-				if (getWidth() < getHeight())
-					super.onFling(null, null, -1200, 0);
-				else
-					super.onFling(null, null, -1600, 0);
+				super.onFling(null, null, (float) (getWidth() * modifier*densityModulator * -1), 0);
 				return true;
 			}
 			if (keyCode == KeyEvent.KEYCODE_MENU) {
