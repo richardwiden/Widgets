@@ -16,21 +16,18 @@ import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
-public class ImageSpinner extends Gallery implements
-		android.widget.AdapterView.OnItemSelectedListener {
-	private class ScaleListener extends
-			ScaleGestureDetector.SimpleOnScaleGestureListener {
+public class ImageSpinner extends Gallery implements android.widget.AdapterView.OnItemSelectedListener {
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
 			mScaleFactor = detector.getScaleFactor();
 			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-			getSelectedImageView().scale(mScaleFactor, detector.getFocusX(),
-					detector.getFocusY());
+			getSelectedImageView().scale(mScaleFactor, detector.getFocusX(), detector.getFocusY());
 			return true;
 		}
 	}
 
-	private static final String TAG = "ApinaViewer";
+	private static final String TAG = "RetorikWidgets";
 	private boolean atRightEdge;
 	private boolean atLeftEdge;
 	private OnItemSelectedListener listener;
@@ -86,14 +83,12 @@ public class ImageSpinner extends Gallery implements
 
 	@Override
 	protected ContextMenuInfo getContextMenuInfo() {
-		AdapterContextMenuInfo contextmenu = new AdapterContextMenuInfo(this,
-				position, id);
+		AdapterContextMenuInfo contextmenu = new AdapterContextMenuInfo(this, position, id);
 		return contextmenu;
 	}
 
 	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		if (velocityX == velocityY && velocityY == -1l) {
 			return false;
 		}
@@ -125,8 +120,7 @@ public class ImageSpinner extends Gallery implements
 	}
 
 	@Override
-	public void onItemSelected(AdapterView<?> parent, View arg1, int position,
-			long id) {
+	public void onItemSelected(AdapterView<?> parent, View arg1, int position, long id) {
 		this.position = position;
 		this.arg1 = arg1;
 		this.parent = parent;
@@ -141,16 +135,14 @@ public class ImageSpinner extends Gallery implements
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP
-					|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
 				if (getWidth() < getHeight())
 					super.onFling(null, null, 1200, 0);
 				else
 					super.onFling(null, null, 1600, 0);
 				return true;
 			}
-			if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-					|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+			if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
 				if (getWidth() < getHeight())
 					super.onFling(null, null, -1200, 0);
 				else
@@ -170,11 +162,8 @@ public class ImageSpinner extends Gallery implements
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (event.getAction() == KeyEvent.ACTION_UP) {
-			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP
-					|| keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
-					|| keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-					|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT
-					|| keyCode == KeyEvent.KEYCODE_MENU) {
+			if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+					|| keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_MENU) {
 				return true;
 			}
 		}
@@ -195,8 +184,7 @@ public class ImageSpinner extends Gallery implements
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		if (mScaleDetector.isInProgress()) {
 			return true;
 		}
@@ -236,8 +224,7 @@ public class ImageSpinner extends Gallery implements
 					getSelectedImageView().translate(0, -distanceY);
 					super.onScroll(e1, e2, distanceX, distanceY);
 					return true;
-				} else if (getChildAt(0 + 1) != null
-						&& !getChildAt(0 + 1).isSelected()) {
+				} else if (getChildAt(0 + 1) != null && !getChildAt(0 + 1).isSelected()) {
 					getSelectedImageView().translate(0, -distanceY);
 					super.onScroll(e1, e2, distanceX, distanceY);
 					// Log.e(TAG, "positionLEFT: ");
@@ -259,8 +246,7 @@ public class ImageSpinner extends Gallery implements
 		// setAnimationDuration(250);
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			isTouching = true;
-		} else if (event.getAction() == MotionEvent.ACTION_UP
-				&& event.getPointerCount() == 1) {
+		} else if (event.getAction() == MotionEvent.ACTION_UP && event.getPointerCount() == 1) {
 			isTouching = false;
 			isScrollingRight = false;
 			isScrollingLeft = false;

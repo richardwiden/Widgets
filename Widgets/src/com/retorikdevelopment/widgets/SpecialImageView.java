@@ -16,7 +16,7 @@ import android.widget.ImageView;
 
 public class SpecialImageView extends ImageView {
 	private Bitmap not_foundBitmap;
-	protected static final String TAG = "ApinaViewer";
+	protected static final String TAG = "RetorikWidgets";
 	private boolean newImageNeedsLayout;
 
 	public SpecialImageView(Context context) {
